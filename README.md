@@ -3,8 +3,6 @@
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=sathish-dev-in&label=Profile%20views&color=0e75b6&style=flat" alt="sathish-dev-in" /> </p>
 
-<p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=sathish-dev-in" alt="sathish-dev-in" /></a> </p>
-
 - 🌱 I’m currently learning **Angular**
 
 <h3 align="left">Connect with me:</h3>
