@@ -19,7 +19,6 @@ Hi, I'm **Sathish K** — a Java Full Stack Developer with **2 years of experien
 
 I build projects to deepen my understanding of software design, OOP principles, and enterprise patterns. Every project in this repository is fully functional, written from scratch, and reflects real-world application structure.
 
-**📧 Email:** programmer11@leaap.com  
 **🐙 GitHub:** [github.com/sathish-dev-in](https://github.com/sathish-dev-in)
 
 ---

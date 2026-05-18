@@ -315,7 +315,7 @@ Full DDL with foreign keys: [`database/schema.sql`](database/schema.sql)
 
 ### Sathish K
 **Java Full Stack Developer**  
-📧 programmer11@leaap.com  
+
 🐙 [github.com/sathish-dev-in](https://github.com/sathish-dev-in)
 
 </td>
