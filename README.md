@@ -40,17 +40,34 @@ I build projects to deepen my understanding of software design, OOP principles, 
 
 ---
 
+### 2. 🔧 [AutoNest — Garage Management System](./autonest/)
+
+> A production-quality garage management system built with Java 17, Spring Boot 3.2, PostgreSQL, MongoDB, and Angular 17 with Tailwind CSS.
+
+| | |
+|---|---|
+| **Stack** | Java 17, Spring Boot 3.2, PostgreSQL, MongoDB, Angular 17, Tailwind CSS, Maven |
+| **Key Features** | Customer & vehicle management, service orders with lifecycle, parts inventory, auto-invoicing, async audit logs |
+| **Java 17 Concepts** | Records, Sealed Classes, Generics, Custom Functional Interface, CompletableFuture, Pattern Matching, Switch Expressions, AOP |
+| **Folder** | [`/autonest`](./autonest/) |
+
+[![View Project](https://img.shields.io/badge/View_Project-AutoNest-1e293b?style=for-the-badge)](./autonest/)
+
+---
+
 ## 🛠 Core Skills Demonstrated Across Projects
 
 | Skill | Technologies |
 |---|---|
-| **Backend** | Java 11, Spring Boot, Spring MVC, Spring Data JPA, Hibernate |
-| **Database** | MySQL, SQL, JPA entity relationships, JPQL |
-| **Frontend** | JSP, JSTL, HTML5, CSS3, JavaScript, Bootstrap 5 |
-| **Architecture** | MVC, Layered (Controller → Service → Repository), DTO pattern |
+| **Backend** | Java 11/17, Spring Boot 2.7/3.2, Spring MVC, Spring Data JPA, Hibernate |
+| **Database** | MySQL, PostgreSQL, MongoDB, JPA entity relationships, JPQL |
+| **Frontend** | Angular 17 (Standalone), JSP, JSTL, HTML5, CSS3, JavaScript, Bootstrap 5, Tailwind CSS |
+| **Architecture** | MVC, Layered (Controller → Service → Repository), DTO pattern, Dual-DB |
+| **Java 17** | Records, Sealed Classes, Generics, Pattern Matching, Switch Expressions, CompletableFuture |
+| **Enterprise Patterns** | AOP, Custom Annotations, Functional Interfaces, Builder Pattern, Generic Interfaces |
 | **Security** | BCrypt password hashing, session management |
-| **OOP** | Abstraction, Inheritance, Encapsulation, Polymorphism |
-| **Tools** | Maven, Git, IntelliJ IDEA |
+| **OOP** | Abstraction, Inheritance, Encapsulation, Polymorphism, Enums with abstract methods |
+| **Tools** | Maven, Git, IntelliJ IDEA, Angular CLI |
 
 ---
 

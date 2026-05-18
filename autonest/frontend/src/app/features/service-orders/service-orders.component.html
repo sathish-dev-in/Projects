@@ -1,0 +1,170 @@
+<!-- Page Header -->
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Service Orders</h2>
+    <p class="page-subtitle">Track and manage all service jobs</p>
+  </div>
+  <button (click)="openCreateForm()" class="btn-primary">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    New Order
+  </button>
+</div>
+
+<!-- Alerts -->
+@if (successMsg()) {
+  <div class="mb-4 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-700">✓ {{ successMsg() }}</div>
+}
+@if (error()) {
+  <div class="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+}
+
+<!-- Status Filter Tabs -->
+<div class="flex gap-2 mb-6 flex-wrap">
+  <button
+    (click)="filterStatus.set('ALL')"
+    [class]="filterStatus() === 'ALL' ? 'px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-white' : 'px-4 py-2 text-sm font-medium rounded-lg bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'">
+    All Orders
+  </button>
+  @for (status of statuses; track status) {
+    <button
+      (click)="filterStatus.set(status)"
+      [class]="filterStatus() === status ? 'px-4 py-2 text-sm font-medium rounded-lg bg-gray-800 text-white' : 'px-4 py-2 text-sm font-medium rounded-lg bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'">
+      {{ status.replace('_', ' ') }}
+    </button>
+  }
+</div>
+
+<!-- Orders Table -->
+<div class="card">
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+  } @else if (filteredOrders.length === 0) {
+    <div class="text-center py-12">
+      <div class="text-5xl mb-3">🔧</div>
+      <p class="text-gray-500">No service orders found.</p>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead class="table-head">
+          <tr>
+            <th class="table-th">Order #</th>
+            <th class="table-th">Vehicle</th>
+            <th class="table-th">Service</th>
+            <th class="table-th">Mechanic</th>
+            <th class="table-th">Status</th>
+            <th class="table-th">Est. Cost</th>
+            <th class="table-th">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          @for (order of filteredOrders; track order.id) {
+            <tr class="table-tr">
+              <td class="table-td font-mono text-xs text-gray-500">#{{ order.id }}</td>
+              <td class="table-td">
+                <div>
+                  <p class="font-medium text-gray-900">{{ order.vehicle?.year }} {{ order.vehicle?.make }} {{ order.vehicle?.model }}</p>
+                  <p class="text-xs text-gray-400">{{ order.vehicle?.licensePlate }}</p>
+                </div>
+              </td>
+              <td class="table-td">
+                <p class="text-sm font-medium text-gray-700">{{ formatServiceType(order.serviceType) }}</p>
+                <p class="text-xs text-gray-400 max-w-[200px] truncate">{{ order.description }}</p>
+              </td>
+              <td class="table-td text-gray-600">
+                {{ order.mechanic ? order.mechanic.firstName + ' ' + order.mechanic.lastName : '—' }}
+              </td>
+              <td class="table-td">
+                <span [class]="getStatusClass(order.status)">{{ order.status.replace('_', ' ') }}</span>
+              </td>
+              <td class="table-td font-semibold text-gray-800">₹{{ order.estimatedCost | number:'1.0-0' }}</td>
+              <td class="table-td">
+                <div class="flex items-center gap-1 flex-wrap">
+                  @for (next of getNextStatuses(order.status); track next) {
+                    <button
+                      (click)="updateStatus(order, next)"
+                      class="px-2 py-1 text-xs font-medium rounded-md transition-colors"
+                      [class]="next === 'IN_PROGRESS' ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' :
+                               next === 'COMPLETED' ? 'bg-green-50 text-green-700 hover:bg-green-100' :
+                               'bg-red-50 text-red-700 hover:bg-red-100'">
+                      → {{ next.replace('_', ' ') }}
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="text-xs text-gray-400 mt-3">{{ filteredOrders.length }} order(s)</p>
+  }
+</div>
+
+<!-- Form Modal -->
+@if (showForm()) {
+  <div class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" (click)="closeForm()"></div>
+    <div class="relative z-10 ml-auto mr-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col">
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">New Service Order</h3>
+        <button (click)="closeForm()" class="text-gray-400 hover:text-gray-600">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submitForm()" class="flex flex-col flex-1 overflow-y-auto">
+        <div class="flex-1 px-6 py-5 space-y-4">
+
+          <div>
+            <label class="form-label">Vehicle *</label>
+            <select formControlName="vehicleId" class="form-select">
+              <option [value]="null">Select vehicle</option>
+              @for (v of vehicles(); track v.id) {
+                <option [value]="v.id">{{ v.year }} {{ v.make }} {{ v.model }} — {{ v.licensePlate }}</option>
+              }
+            </select>
+            @if (isInvalid('vehicleId')) { <p class="text-xs text-red-500 mt-1">Vehicle is required</p> }
+          </div>
+
+          <div>
+            <label class="form-label">Service Type *</label>
+            <select formControlName="serviceType" class="form-select">
+              @for (type of serviceTypes; track type) {
+                <option [value]="type">{{ type.replace('_', ' ') }}</option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">Description *</label>
+            <textarea formControlName="description" rows="3" class="form-input resize-none" placeholder="Describe the work to be done..."></textarea>
+            @if (isInvalid('description')) { <p class="text-xs text-red-500 mt-1">Description is required (min 10 chars)</p> }
+          </div>
+
+          <div>
+            <label class="form-label">Estimated Cost (₹) *</label>
+            <input type="number" formControlName="estimatedCost" class="form-input" placeholder="2500" min="0" />
+            @if (isInvalid('estimatedCost')) { <p class="text-xs text-red-500 mt-1">Cost must be positive</p> }
+          </div>
+
+          <div>
+            <label class="form-label">Notes</label>
+            <textarea formControlName="notes" rows="2" class="form-input resize-none" placeholder="Additional notes..."></textarea>
+          </div>
+        </div>
+
+        <div class="flex gap-3 px-6 py-5 border-t border-gray-200">
+          <button type="button" (click)="closeForm()" class="btn-secondary flex-1">Cancel</button>
+          <button type="submit" class="btn-primary flex-1" [disabled]="form.invalid">Create Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

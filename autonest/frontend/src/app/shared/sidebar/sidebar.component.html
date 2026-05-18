@@ -1,0 +1,50 @@
+<aside
+  class="fixed inset-y-0 left-0 z-50 flex flex-col bg-slate-800 text-white transition-all duration-300 overflow-hidden"
+  [ngClass]="isOpen ? 'w-64' : 'w-16'">
+
+  <!-- Logo / Brand -->
+  <div class="flex items-center gap-3 px-4 py-5 border-b border-slate-700 min-h-[73px]">
+    <div class="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center text-lg font-bold flex-shrink-0">
+      A
+    </div>
+    <div *ngIf="isOpen" class="overflow-hidden">
+      <span class="text-lg font-bold tracking-tight text-white whitespace-nowrap">AutoNest</span>
+      <p class="text-xs text-slate-400 whitespace-nowrap">Garage Management</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
+    @for (item of navItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-slate-700 text-white"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-all duration-200 group">
+        <span class="text-lg flex-shrink-0 w-6 text-center">{{ item.icon }}</span>
+        @if (isOpen) {
+          <span class="text-sm font-medium whitespace-nowrap overflow-hidden">{{ item.label }}</span>
+        }
+      </a>
+    }
+  </nav>
+
+  <!-- Footer -->
+  <div class="px-4 py-4 border-t border-slate-700">
+    @if (isOpen) {
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold flex-shrink-0">
+          SK
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-sm font-medium text-white whitespace-nowrap">Sathish K</p>
+          <p class="text-xs text-slate-400 whitespace-nowrap">Admin</p>
+        </div>
+      </div>
+    } @else {
+      <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold mx-auto">
+        SK
+      </div>
+    }
+  </div>
+</aside>

@@ -1,0 +1,181 @@
+<!-- Page Header -->
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Customers</h2>
+    <p class="page-subtitle">Manage your garage customer base</p>
+  </div>
+  <button (click)="openCreateForm()" class="btn-primary">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    Add Customer
+  </button>
+</div>
+
+<!-- Alerts -->
+@if (successMsg()) {
+  <div class="mb-4 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-700">
+    ✓ {{ successMsg() }}
+  </div>
+}
+@if (error()) {
+  <div class="mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+    {{ error() }}
+  </div>
+}
+
+<!-- Search Bar -->
+<div class="card mb-6">
+  <div class="flex gap-3">
+    <input
+      type="text"
+      class="form-input flex-1"
+      placeholder="Search by name..."
+      [(ngModel)]="searchQuery"
+      (input)="search()"
+    />
+    <button (click)="loadCustomers()" class="btn-secondary">Clear</button>
+  </div>
+</div>
+
+<!-- Customer Table -->
+<div class="card">
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+  } @else if (customers().length === 0) {
+    <div class="text-center py-12">
+      <div class="text-5xl mb-3">👥</div>
+      <p class="text-gray-500">No customers found.</p>
+      <button (click)="openCreateForm()" class="btn-primary mt-4">Add First Customer</button>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead class="table-head">
+          <tr>
+            <th class="table-th">#</th>
+            <th class="table-th">Name</th>
+            <th class="table-th">Email</th>
+            <th class="table-th">Phone</th>
+            <th class="table-th">City</th>
+            <th class="table-th">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          @for (customer of customers(); track customer.id) {
+            <tr class="table-tr">
+              <td class="table-td text-gray-400 text-xs font-mono">{{ customer.id }}</td>
+              <td class="table-td">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-bold flex-shrink-0">
+                    {{ customer.firstName[0] }}{{ customer.lastName[0] }}
+                  </div>
+                  <span class="font-medium text-gray-900">{{ customer.firstName }} {{ customer.lastName }}</span>
+                </div>
+              </td>
+              <td class="table-td text-gray-600">{{ customer.email }}</td>
+              <td class="table-td text-gray-600">{{ customer.phone }}</td>
+              <td class="table-td text-gray-600">{{ customer.city || '—' }}</td>
+              <td class="table-td">
+                <div class="flex items-center gap-2">
+                  <button
+                    (click)="openEditForm(customer)"
+                    class="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                    Edit
+                  </button>
+                  <button
+                    (click)="deleteCustomer(customer.id, customer.firstName + ' ' + customer.lastName)"
+                    class="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="text-xs text-gray-400 mt-3">{{ customers().length }} customer(s) found</p>
+  }
+</div>
+
+<!-- Slide-over Form Modal -->
+@if (showForm()) {
+  <div class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" (click)="closeForm()"></div>
+
+    <!-- Panel -->
+    <div class="relative z-10 ml-auto mr-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">
+          {{ editingId() ? 'Edit Customer' : 'New Customer' }}
+        </h3>
+        <button (click)="closeForm()" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="form" (ngSubmit)="submitForm()" class="flex flex-col flex-1 overflow-y-auto">
+        <div class="flex-1 px-6 py-5 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">First Name *</label>
+              <input type="text" formControlName="firstName" class="form-input" placeholder="John" />
+              @if (isInvalid('firstName')) {
+                <p class="text-xs text-red-500 mt-1">First name is required (min 2 chars)</p>
+              }
+            </div>
+            <div>
+              <label class="form-label">Last Name *</label>
+              <input type="text" formControlName="lastName" class="form-input" placeholder="Doe" />
+              @if (isInvalid('lastName')) {
+                <p class="text-xs text-red-500 mt-1">Last name is required (min 2 chars)</p>
+              }
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Email *</label>
+            <input type="email" formControlName="email" class="form-input" placeholder="john@example.com" />
+            @if (isInvalid('email')) {
+              <p class="text-xs text-red-500 mt-1">Valid email is required</p>
+            }
+          </div>
+
+          <div>
+            <label class="form-label">Phone *</label>
+            <input type="tel" formControlName="phone" class="form-input" placeholder="9876543210" />
+            @if (isInvalid('phone')) {
+              <p class="text-xs text-red-500 mt-1">Valid phone number is required</p>
+            }
+          </div>
+
+          <div>
+            <label class="form-label">Address</label>
+            <input type="text" formControlName="address" class="form-input" placeholder="Street address" />
+          </div>
+
+          <div>
+            <label class="form-label">City</label>
+            <input type="text" formControlName="city" class="form-input" placeholder="City" />
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex gap-3 px-6 py-5 border-t border-gray-200">
+          <button type="button" (click)="closeForm()" class="btn-secondary flex-1">Cancel</button>
+          <button type="submit" class="btn-primary flex-1" [disabled]="form.invalid">
+            {{ editingId() ? 'Update' : 'Create' }} Customer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

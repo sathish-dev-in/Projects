@@ -1,0 +1,159 @@
+<!-- Page Header -->
+<div class="page-header">
+  <div>
+    <h2 class="page-title">Dashboard</h2>
+    <p class="page-subtitle">Welcome back — here's what's happening at AutoNest today</p>
+  </div>
+  <button (click)="refresh()" class="btn-secondary">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+    </svg>
+    Refresh
+  </button>
+</div>
+
+<!-- Loading State -->
+@if (loading()) {
+  <div class="flex items-center justify-center h-64">
+    <div class="flex flex-col items-center gap-3">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+      <p class="text-sm text-gray-500">Loading dashboard...</p>
+    </div>
+  </div>
+}
+
+<!-- Error State -->
+@if (error()) {
+  <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+    <p class="text-sm text-red-600 font-medium">{{ error() }}</p>
+  </div>
+}
+
+<!-- Stats Grid -->
+@if (stats(); as s) {
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+    <!-- Total Customers -->
+    <div class="stat-card">
+      <div class="stat-icon bg-blue-100">👥</div>
+      <div>
+        <p class="text-2xl font-bold text-gray-900">{{ s.totalCustomers }}</p>
+        <p class="text-sm text-gray-500 font-medium">Total Customers</p>
+        <a routerLink="/customers" class="text-xs text-blue-600 hover:underline mt-1 inline-block">View all →</a>
+      </div>
+    </div>
+
+    <!-- Total Vehicles -->
+    <div class="stat-card">
+      <div class="stat-icon bg-purple-100">🚗</div>
+      <div>
+        <p class="text-2xl font-bold text-gray-900">{{ s.totalVehicles }}</p>
+        <p class="text-sm text-gray-500 font-medium">Registered Vehicles</p>
+        <a routerLink="/vehicles" class="text-xs text-purple-600 hover:underline mt-1 inline-block">View all →</a>
+      </div>
+    </div>
+
+    <!-- Active Services -->
+    <div class="stat-card">
+      <div class="stat-icon bg-yellow-100">🔧</div>
+      <div>
+        <p class="text-2xl font-bold text-gray-900">{{ s.activeServices }}</p>
+        <p class="text-sm text-gray-500 font-medium">Active Services</p>
+        <a routerLink="/service-orders" class="text-xs text-yellow-600 hover:underline mt-1 inline-block">View active →</a>
+      </div>
+    </div>
+
+    <!-- Revenue -->
+    <div class="stat-card">
+      <div class="stat-icon bg-green-100">💰</div>
+      <div>
+        <p class="text-2xl font-bold text-gray-900">₹{{ s.totalRevenue | number:'1.0-0' }}</p>
+        <p class="text-sm text-gray-500 font-medium">Total Revenue</p>
+        <span class="text-xs text-green-600 mt-1 inline-block">Completed orders</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secondary Stats -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+    <div class="card text-center py-4">
+      <p class="text-xl font-bold text-yellow-600">{{ s.pendingServices }}</p>
+      <p class="text-xs text-gray-500 mt-1">Pending</p>
+    </div>
+    <div class="card text-center py-4">
+      <p class="text-xl font-bold text-blue-600">{{ s.activeServices }}</p>
+      <p class="text-xs text-gray-500 mt-1">In Progress</p>
+    </div>
+    <div class="card text-center py-4">
+      <p class="text-xl font-bold text-green-600">{{ s.completedServices }}</p>
+      <p class="text-xs text-gray-500 mt-1">Completed</p>
+    </div>
+    <div class="card text-center py-4">
+      <p class="text-xl font-bold text-red-600">{{ s.cancelledServices }}</p>
+      <p class="text-xs text-gray-500 mt-1">Cancelled</p>
+    </div>
+    <div class="card text-center py-4">
+      <p class="text-xl font-bold text-gray-700">{{ s.totalParts }}</p>
+      <p class="text-xs text-gray-500 mt-1">Parts</p>
+    </div>
+    <div class="card text-center py-4">
+      <p class="text-xl font-bold" [class]="s.lowStockParts > 0 ? 'text-orange-600' : 'text-green-600'">{{ s.lowStockParts }}</p>
+      <p class="text-xs text-gray-500 mt-1">Low Stock</p>
+    </div>
+  </div>
+}
+
+<!-- Active Service Orders Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <h3 class="text-lg font-semibold text-gray-900">Active Service Orders</h3>
+      <p class="text-sm text-gray-500">Pending and in-progress jobs</p>
+    </div>
+    <a routerLink="/service-orders" class="btn-primary text-xs">View All</a>
+  </div>
+
+  @if (recentOrders().length === 0) {
+    <div class="text-center py-12">
+      <div class="text-4xl mb-3">🎉</div>
+      <p class="text-gray-500 text-sm">No active service orders right now.</p>
+    </div>
+  } @else {
+    <div class="table-container">
+      <table class="table">
+        <thead class="table-head">
+          <tr>
+            <th class="table-th">Order ID</th>
+            <th class="table-th">Vehicle</th>
+            <th class="table-th">Service</th>
+            <th class="table-th">Mechanic</th>
+            <th class="table-th">Status</th>
+            <th class="table-th">Est. Cost</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          @for (order of recentOrders(); track order.id) {
+            <tr class="table-tr">
+              <td class="table-td">
+                <span class="font-mono text-xs text-gray-600">#{{ order.id }}</span>
+              </td>
+              <td class="table-td">
+                <div>
+                  <p class="font-medium text-gray-900">{{ order.vehicle?.year }} {{ order.vehicle?.make }} {{ order.vehicle?.model }}</p>
+                  <p class="text-xs text-gray-500">{{ order.vehicle?.licensePlate }}</p>
+                </div>
+              </td>
+              <td class="table-td">{{ order.serviceType?.replace('_', ' ') }}</td>
+              <td class="table-td">
+                {{ order.mechanic ? order.mechanic.firstName + ' ' + order.mechanic.lastName : '—' }}
+              </td>
+              <td class="table-td">
+                <span [class]="getStatusClass(order.status)">{{ getStatusLabel(order.status) }}</span>
+              </td>
+              <td class="table-td font-medium">₹{{ order.estimatedCost | number:'1.0-0' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
