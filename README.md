@@ -55,6 +55,22 @@ I build projects to deepen my understanding of software design, OOP principles, 
 
 ---
 
+### 3. 🏦 [NexaBank — Digital Banking Microservices Platform](./nexabank/)
+
+> A complete microservices-based digital banking platform built with Spring Boot 3.2, Spring Cloud, PostgreSQL, MongoDB, Angular 17, and Tailwind CSS.
+
+| | |
+|---|---|
+| **Stack** | Java 17, Spring Boot 3.2, Spring Cloud (Eureka, Gateway, OpenFeign), PostgreSQL, MongoDB, Angular 17, Tailwind CSS |
+| **Key Features** | User auth with JWT, multi-account management, fund transfers, async notifications, service discovery, API gateway |
+| **Microservices** | Discovery Server, API Gateway, Auth Service, Account Service, Transaction Service, Notification Service |
+| **Java 17 Concepts** | Records, Sealed Classes, Pattern Matching, Switch Expressions, Generics, CompletableFuture, AOP, Custom Annotations, Functional Interfaces |
+| **Folder** | [`/nexabank`](./nexabank/) |
+
+[![View Project](https://img.shields.io/badge/View_Project-NexaBank-1e40af?style=for-the-badge)](./nexabank/)
+
+---
+
 ## 🛠 Core Skills Demonstrated Across Projects
 
 | Skill | Technologies |
@@ -65,7 +81,8 @@ I build projects to deepen my understanding of software design, OOP principles, 
 | **Architecture** | MVC, Layered (Controller → Service → Repository), DTO pattern, Dual-DB |
 | **Java 17** | Records, Sealed Classes, Generics, Pattern Matching, Switch Expressions, CompletableFuture |
 | **Enterprise Patterns** | AOP, Custom Annotations, Functional Interfaces, Builder Pattern, Generic Interfaces |
-| **Security** | BCrypt password hashing, session management |
+| **Microservices** | Spring Cloud (Eureka, Gateway, OpenFeign), JWT, Service Discovery, API Gateway pattern |
+| **Security** | BCrypt password hashing, JWT (JJWT 0.12.x), Spring Security, session management |
 | **OOP** | Abstraction, Inheritance, Encapsulation, Polymorphism, Enums with abstract methods |
 | **Tools** | Maven, Git, IntelliJ IDEA, Angular CLI |
 
@@ -74,10 +91,9 @@ I build projects to deepen my understanding of software design, OOP principles, 
 ## 📈 More Projects Coming Soon
 
 This repository is actively growing. Future projects will cover:
-- REST API development with Spring Boot
-- Microservices concepts
-- React + Spring Boot full-stack
-- More domain-specific applications
+- React + Spring Boot full-stack applications
+- Event-driven architecture with Apache Kafka
+- More domain-specific enterprise applications
 
 ---
 
